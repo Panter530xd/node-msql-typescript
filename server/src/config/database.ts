@@ -8,6 +8,7 @@ import { createFoodAllergyTable } from "./tables/food-allergies/food_allergies";
 import { seedFoodAllergiesData } from "./tables/food-allergies/seed-food-data";
 import { createRegistrationTable } from "./tables/registration";
 import { createTeamsTable } from "./tables/teams";
+import { createUsersTable } from "./tables/users";
 dotenv.config();
 
 const pool = mysql.createPool({
@@ -30,16 +31,17 @@ export async function databaseConection(sql: string, values?: any) {
   }
 }
 
-export async function initializeDatabase() {
-  await createAcademiesTable();
-  await seedAcademiesData();
+// export async function initializeDatabase() {
+//   // await createAcademiesTable();
+//   // await seedAcademiesData();
 
-  await createGroupsTable();
-  await seedGroupsData();
+//   // await createGroupsTable();
+//   // await seedGroupsData();
 
-  await createFoodAllergyTable();
-  await seedFoodAllergiesData();
-  await createRegistrationTable();
-  await createTeamsTable();
-  console.log("Database initialized successfully");
-}
+//   // await createFoodAllergyTable();
+//   // await seedFoodAllergiesData();
+//   // await createRegistrationTable();
+//   await createTeamsTable();
+//   // await createUsersTable();
+//   console.log("Database initialized successfully");
+// }
