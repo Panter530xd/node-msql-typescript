@@ -100,14 +100,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     logout: async () => {
       try {
-        await fetch("http://localhost:3000/api/users/logout", {
+        const response = await fetch("http://localhost:3000/api/users/logout", {
           method: "POST",
           credentials: "include",
         });
-        toast.success("Logout successful");
-        queryClient.invalidateQueries(["user"]);
 
-        navigate("/login");
+        if (response.ok) {
+          const data = await response.json();
+          toast.success(data.message || "Logout successful");
+          queryClient.invalidateQueries(["user"]);
+          navigate("/login");
+        } else {
+          const data = await response.json();
+          toast.error(data.message || "Logout failed");
+        }
       } catch (error) {
         console.error("Error during logout:", error);
         toast.error("Logout failed");
