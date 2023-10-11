@@ -1,12 +1,17 @@
-import jwt from "jsonwebtoken";
+import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 
+interface User {
+  id: string;
+  email: string;
+}
+
 declare global {
   namespace Express {
     interface Request {
-      user?: any;
+      user?: User;
     }
   }
 }
@@ -22,14 +27,18 @@ export function authenticateToken(
     return res.sendStatus(401);
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err: any, user: any) => {
-    if (err) {
-      console.error("JWT verification error:", err);
-      return res.sendStatus(403);
+  jwt.verify(
+    token,
+    process.env.JWT_SECRET,
+    (err: JsonWebTokenError | null, user: User | undefined) => {
+      if (err) {
+        console.error("JWT verification error:", err);
+        return res.sendStatus(403);
+      }
+
+      req.user = user;
+
+      next();
     }
-
-    req.user = user;
-
-    next();
-  });
+  );
 }
