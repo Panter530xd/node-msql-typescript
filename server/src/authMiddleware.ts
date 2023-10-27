@@ -21,8 +21,15 @@ export function authenticateToken(
   res: Response,
   next: NextFunction
 ) {
-  const token = req.cookies.token;
+  console.log("Headers", req.headers);
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  console.log("Auth Header", authHeader);
+  if (typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
+    return res.sendStatus(401);
+  }
 
+  const token = authHeader.split(" ")[1];
+  console.log("Token", token);
   if (!token) {
     return res.sendStatus(401);
   }

@@ -1,3 +1,5 @@
+import UserForm from "../componets/UsersForm";
+
 export default function Home() {
-  return <h1>This is Home</h1>;
+  return <UserForm />;
 }

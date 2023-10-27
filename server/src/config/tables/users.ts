@@ -10,7 +10,11 @@ export async function createUsersTable() {
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL
   )`;
 
-  await databaseConection(sql);
-
-  console.log("Users table created successfully");
+  try {
+    await databaseConection(sql);
+    console.log("Users table created successfully");
+  } catch (error) {
+    console.error("Error creating users table:", error);
+    throw error;
+  }
 }

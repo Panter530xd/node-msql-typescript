@@ -3,7 +3,7 @@ import { getAcademy } from "../services/academyGet";
 
 const router = express.Router();
 
-router.get("/academy", async (req: Request, res: Response) => {
+router.get("/academies", async (req: Request, res: Response) => {
   try {
     const academy = await getAcademy();
     res.json(academy);

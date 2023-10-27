@@ -10,7 +10,11 @@ export async function createGroupsTable() {
       )
     `;
 
-  await databaseConection(sql);
-
-  console.log("Groups table created successfully");
+  try {
+    await databaseConection(sql);
+    console.log("Groups table created successfully");
+  } catch (error) {
+    console.error("Error creating groups table:", error);
+    throw error;
+  }
 }

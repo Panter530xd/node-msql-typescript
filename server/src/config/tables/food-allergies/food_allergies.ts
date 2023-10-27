@@ -6,6 +6,11 @@ export async function createFoodAllergyTable() {
     name VARCHAR(256) NOT NULL
   )`;
 
-  await databaseConection(sql);
-  console.log("food_allergies table created successfully");
+  try {
+    await databaseConection(sql);
+    console.log("Food_allergies table created successfully");
+  } catch (error) {
+    console.error("Error creating food_allergies table:", error);
+    throw error;
+  }
 }

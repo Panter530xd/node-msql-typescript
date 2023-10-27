@@ -1,6 +1,6 @@
 import { databaseConection } from "../database";
 
-export async function createRegistrationTable() {
+export async function createRegistrationTable(): Promise<void> {
   const sql = `
     CREATE TABLE IF NOT EXISTS registration (
       id INT PRIMARY KEY AUTO_INCREMENT,
@@ -20,7 +20,11 @@ export async function createRegistrationTable() {
     )
   `;
 
-  await databaseConection(sql);
-
-  console.log("Registration table created successfully");
+  try {
+    await databaseConection(sql);
+    console.log("Registration table created successfully");
+  } catch (error) {
+    console.error("Error creating registration table:", error);
+    throw error;
+  }
 }

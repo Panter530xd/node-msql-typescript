@@ -16,8 +16,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <AuthProvider>
           <Navbar />
-          <Toaster position="top-center" reverseOrder={false} />
           <App />
+          <Toaster position="top-center" reverseOrder={false} />
         </AuthProvider>
       </BrowserRouter>
 
