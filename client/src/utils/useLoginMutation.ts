@@ -1,4 +1,3 @@
-// useLoginMutation.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { User } from "./useAuthData";
@@ -6,23 +5,28 @@ import { User } from "./useAuthData";
 export const useLoginMutation = () => {
   const queryClient = useQueryClient();
 
+  const loginUser = async (data: { email: string; password: string }) => {
+    const response = await fetch("http://localhost:3000/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message);
+    }
+
+    return await response.json();
+  };
+
   const loginMutation = useMutation(
     async (data: { email: string; password: string }) => {
-      const response = await fetch("http://localhost:3000/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+      const loginData = await loginUser(data);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message);
-      }
-
-      const loginData = await response.json();
       const accessToken = loginData.accessToken;
 
       if (!accessToken) {
@@ -40,7 +44,7 @@ export const useLoginMutation = () => {
       onSuccess: () => {
         queryClient.invalidateQueries(["user"]);
       },
-      onError: (error: any) => {
+      onError: (error: Error) => {
         toast.error(error.message);
       },
     }

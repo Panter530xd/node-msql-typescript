@@ -35,11 +35,9 @@ export const useAuthData = () => {
         }
 
         const userData = await response.json();
-        console.log("Data", userData);
 
         return { accessToken, ...userData.user } as User;
       } catch (error) {
-        console.error("Error during user query:", error);
         throw error;
       }
     },

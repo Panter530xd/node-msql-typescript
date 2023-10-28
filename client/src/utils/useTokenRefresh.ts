@@ -23,33 +23,19 @@ export const useTokenRefresh = (user: User | undefined, isLoading: boolean) => {
 
         if (response.ok) {
           const data = await response.json();
+
           if (data && data.accessToken) {
             const newAccessToken = data.accessToken;
 
             queryClient.setQueryData(["user"], {
               accessToken: newAccessToken,
             });
-          } else {
-            console.error("Token refresh failed: Invalid data format", data);
           }
-        } else if (response.status === 401) {
-          console.error(
-            "Token refresh failed: Unauthorized",
-            response.statusText
-          );
-        } else {
-          console.error(
-            "Token refresh failed:",
-            response.status,
-            response.statusText
-          );
         }
       } catch (error) {
-        console.error("Error refreshing token:", error);
+        throw error;
       }
     };
-
-    console.log("USER", user);
 
     if (isLoading) {
       return;

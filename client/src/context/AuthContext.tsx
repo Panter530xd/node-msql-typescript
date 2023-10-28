@@ -31,37 +31,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         throw error;
       }
     },
-    logout: () => {
-      logoutMutation.mutate();
+    logout: async () => {
+      try {
+        await logoutMutation.mutateAsync();
+      } catch (error) {
+        console.error("Error during login:", error);
+        throw error;
+      }
     },
-    // logout: async () => {
-    //   try {
-    //     const response = await fetch("http://localhost:3000/api/users/logout", {
-    //       method: "POST",
-    //       credentials: "include",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: `Bearer ${user?.accessToken}`,
-    //       },
-    //     });
-
-    //     if (response.ok) {
-    //       queryClient.invalidateQueries(["user"]);
-    //       toast.success("Logout successful");
-    //       navigate("/login");
-    //     } else {
-    //       try {
-    //         const data = await response.json();
-    //         toast.error(data.message || "Logout failed");
-    //       } catch (error) {
-    //         toast.error("Logout failed");
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.error("Error during logout:", error);
-    //     toast.error("Logout failed");
-    //   }
-    // },
   };
 
   return isLoading ? (

@@ -24,13 +24,16 @@ export const useLogout = () => {
     }
   };
 
-  const logoutMutation = useMutation(logoutFetch, {
+  const logoutMutation = useMutation({
+    mutationFn: logoutFetch,
     onSuccess: () => {
       toast.success("Logout successful");
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.setQueryData(["user"], null);
+      console.log("QUERY", queryClient.getQueryData(["user"]));
+
       navigate("/login");
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error(error.message);
     },
   });
