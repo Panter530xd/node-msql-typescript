@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z, ZodError } from "zod";
 import { toast } from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
+
+import { useLoginMutation } from "../utils/useLoginMutation";
 interface FormValues {
   email: string;
   password: string;
@@ -32,37 +32,36 @@ const Login: React.FC = () => {
 
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({});
 
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const { login } = useAuth();
+  const loginMutation = useLoginMutation();
 
-  const mutation = useMutation(
-    async (data: FormValues) => {
-      if (!data.email || !data.password) {
-        throw new Error("Please provide both email and password");
-      }
+  // const mutation = useMutation(
+  //   async (data: FormValues) => {
+  //     if (!data.email || !data.password) {
+  //       throw new Error("Please provide both email and password");
+  //     }
 
-      const validatedData = loginSchema.parse(data);
+  //     const validatedData = loginSchema.parse(data);
 
-      return login(validatedData.email, validatedData.password);
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["user"]);
-        setFormValues({ email: "", password: "" });
-        navigate("/");
-        toast.success("User Success login");
-      },
-      onError: (error: any) => {
-        if (typeof error === "object") {
-          toast.error("Validation Error");
-        } else {
-          console.error("Error during login:", error);
-          toast.error("Internal Server Error");
-        }
-      },
-    }
-  );
+  //     return login(validatedData.email, validatedData.password);
+  //   },
+  //   {
+  //     onSuccess: () => {
+  //       queryClient.invalidateQueries(["user"]);
+  //       setFormValues({ email: "", password: "" });
+  //       navigate("/");
+  //       toast.success("User Success login");
+  //     },
+  //     onError: (error: any) => {
+  //       if (typeof error === "object") {
+  //         const errorMessage = error.message || "Login failed";
+  //         toast.error(errorMessage);
+  //       } else {
+  //         console.error("Error during login:", error);
+  //         toast.error("Internal Server Error");
+  //       }
+  //     },
+  //   }
+  // );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -78,7 +77,8 @@ const Login: React.FC = () => {
     try {
       const validatedData = loginSchema.parse(formValues);
       setErrorMessages({});
-      await mutation.mutateAsync(validatedData);
+      await loginMutation.mutateAsync(validatedData);
+      setFormValues({ email: "", password: "" });
     } catch (error) {
       if (error instanceof ZodError) {
         const errors: ErrorMessages = {};
@@ -153,13 +153,13 @@ const Login: React.FC = () => {
               <button
                 type="submit"
                 className="w-full text-white bg-indigo-500 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                disabled={mutation.isLoading}
+                disabled={loginMutation.isLoading}
               >
-                {mutation.isLoading ? "Logging in..." : "Login"}
+                {loginMutation.isLoading ? "Logging in..." : "Login"}
               </button>
-              {mutation.isError && (
+              {loginMutation.isError && (
                 <p className="text-xs text-red-500">
-                  Login failed: {mutation.error.message}
+                  Login failed: {loginMutation.error.message}
                 </p>
               )}
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">

@@ -49,7 +49,7 @@ export async function loginUser(req: Request, res: Response) {
     );
 
     if (!passwordMatch) {
-      return null;
+      return res.status(401).json({ message: "Invalid password" });
     }
 
     const accessToken = jwt.sign(

@@ -42,9 +42,7 @@ export const useTokenRefresh = (user: User | undefined, isLoading: boolean) => {
     }
 
     if (user && !isLoading) {
-      handleTokenRefresh().then(() => {
-        navigate("/");
-      });
+      navigate("/");
     } else if (!user && !isLoading) {
       navigate("/login");
     }
