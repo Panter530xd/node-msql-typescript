@@ -18,9 +18,10 @@ interface DecodedToken {
   id: string;
   email: string;
   exp?: number;
+  role: string;
 }
 router.post("/register", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
 
   try {
     await registerUser(email, password);
@@ -64,20 +65,24 @@ router.get("/refresh", async (req: Request, res: Response) => {
 
     const storedRefreshToken = await getRefreshTokenFromDb(decoded.id);
 
+    const userRole = await getUserRoleFromDb(decoded.id);
+
     if (!storedRefreshToken || storedRefreshToken !== refreshToken) {
       console.error("Invalid or mismatched refresh token");
       return res.sendStatus(403);
     }
 
     const accessToken = jwt.sign(
-      { id: decoded.id, email: decoded.email },
+      { id: decoded.id, email: decoded.email, role: userRole },
       process.env.JWT_SECRET as string,
       { expiresIn: "5m" }
     );
 
-    res.status(200).json({
-      message: "Token refreshed successfully",
+    res.json({
       accessToken,
+      email: decoded.email,
+      role: userRole,
+      id: decoded.id,
     });
   } catch (error) {
     console.error("Error refreshing token:", error);
@@ -109,6 +114,7 @@ router.post(
     const userId = (req.user as { id: string }).id;
 
     res.clearCookie("token");
+    res.clearCookie("access_token");
 
     try {
       await removeRefreshTokenFromDb(userId);
@@ -132,6 +138,21 @@ async function removeRefreshTokenFromDb(userId: string): Promise<void> {
   } catch (error) {
     console.error("Error removing refresh token from the database:", error);
     throw error;
+  }
+}
+
+async function getUserRoleFromDb(userId: string): Promise<string | null> {
+  const selectUserRole = `
+    SELECT role FROM users
+    WHERE id = ?
+  `;
+
+  try {
+    const [result, _fields] = await databaseConection(selectUserRole, [userId]);
+    return (result as { role: string }[])[0]?.role || null;
+  } catch (error) {
+    console.error("Error retrieving user role:", error);
+    return null;
   }
 }
 

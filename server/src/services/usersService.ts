@@ -9,9 +9,15 @@ export async function registerUser(email: string, password: string) {
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const sql = `INSERT INTO users (email, password, terms_agreement) VALUES (?, ?, ?)`;
+    const sql = `INSERT INTO users (email, password, role, terms_agreement) VALUES (?, ?, ?, ?)`;
     const termsAgreement = true;
-    await databaseConection(sql, [email, hashedPassword, termsAgreement]);
+    const defaultRole = "user";
+    await databaseConection(sql, [
+      email,
+      hashedPassword,
+      defaultRole,
+      termsAgreement,
+    ]);
 
     console.log("User registered successfully");
   } catch (error) {
@@ -53,9 +59,9 @@ export async function loginUser(req: Request, res: Response) {
     }
 
     const accessToken = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET as string,
-      { expiresIn: "5m" }
+      { expiresIn: "1h" }
     );
 
     const refreshToken = jwt.sign(
@@ -66,6 +72,15 @@ export async function loginUser(req: Request, res: Response) {
 
     await saveRefreshToken(user.id, refreshToken);
 
+    res.cookie("access_token", accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 24 * 60 * 60 * 1000,
+      domain: "localhost",
+      path: "/",
+    });
+
     res.cookie("token", refreshToken, {
       httpOnly: true,
       secure: true,
@@ -73,8 +88,11 @@ export async function loginUser(req: Request, res: Response) {
       maxAge: 24 * 60 * 60 * 1000,
       domain: "localhost",
     });
+
     console.log("Generated Refresh Token", refreshToken);
-    res.json({ accessToken });
+    console.log("Generated accessToken", accessToken);
+
+    res.json({ accessToken, role: user.role, id: user.id, email: user.email });
   } catch (error) {
     console.error("Error during login:", error);
     res.status(401).json({ message: "Invalid credentials" });

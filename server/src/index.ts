@@ -5,7 +5,7 @@ import groupRoutes from "./routes/groupRoutes";
 import foodRoutes from "./routes/foodRoutes";
 import cors from "cors";
 import userRoutes from "./routes/userRoutes";
-import { authenticateToken } from "./authMiddleware";
+import { authenticateToken, isAdmin, isUser } from "./authMiddleware";
 import cookieParser from "cookie-parser";
 import registrationRoutes from "./routes/registrationRoutes";
 dotenv.config();

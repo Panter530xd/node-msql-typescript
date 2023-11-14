@@ -1,23 +1,26 @@
-import { useQuery } from "@tanstack/react-query";
+import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export type User = {
   id: number;
   email: string;
   accessToken?: string;
+  role: string;
 };
+
 export const useAuthData = () => {
-  const { data: user, isLoading } = useQuery<User>(
+  const queryClient = useQueryClient();
+
+  const isFetching = useIsFetching();
+
+  return useQuery(
     ["user"],
-    async () => {
+    async (): Promise<User> => {
       try {
-        const userResponse = user as User;
-        const accessToken = userResponse?.accessToken || "";
-
+        const accessToken = queryClient.getQueryData<string>(["accessToken"]);
+        console.log("ACCESS TOKEN", accessToken);
         if (!accessToken) {
-          console.error("Access token not available");
-          throw new Error("User not authenticated");
+          throw new Error("Access token not available");
         }
-
         const response = await fetch(
           "http://localhost:3000/api/protected-route",
           {
@@ -30,14 +33,28 @@ export const useAuthData = () => {
           }
         );
 
+        if (response.status === 401) {
+          throw new Error("User not authenticated");
+        }
+
         if (!response.ok) {
           throw new Error("User not authenticated");
         }
 
         const userData = await response.json();
-
-        return { accessToken, ...userData.user } as User;
+        console.log("userData from server:", userData);
+        return {
+          accessToken: userData.user.accessToken || "",
+          ...userData.user,
+          role: userData.user.role,
+        } as User;
       } catch (error) {
+        if (isFetching) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          return queryClient.fetchQuery(["accessToken"]);
+        }
+
+        console.error("Error fetching user data:", error);
         throw error;
       }
     },
@@ -47,5 +64,4 @@ export const useAuthData = () => {
       initialData: undefined,
     }
   );
-  return { user, isLoading };
 };

@@ -37,6 +37,7 @@ export async function initializeDatabase() {
   try {
     await createTeamsTable();
     await refreshToken();
+
     const selectSql = `
       SELECT r.id as register_id, u.id as user_id, r.first_name, r.last_name, r.academy
       FROM registration r
@@ -70,7 +71,7 @@ export async function initializeDatabase() {
 initializeDatabase();
 
 // await seedAcademiesData();
-
+// await createUsersTable();
 // await createGroupsTable();
 // await seedGroupsData();
 

@@ -1,11 +1,12 @@
-import jwt, { JsonWebTokenError } from "jsonwebtoken";
+import jwt, { JsonWebTokenError, JwtPayload } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 
-interface User {
+interface User extends JwtPayload {
   id: string;
   email: string;
+  role: string;
 }
 
 declare global {
@@ -22,14 +23,17 @@ export function authenticateToken(
   next: NextFunction
 ) {
   console.log("Headers", req.headers);
-  const authHeader = req.headers.authorization || req.headers.Authorization;
-  console.log("Auth Header", authHeader);
-  if (typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
-    return res.sendStatus(401);
-  }
-
-  const token = authHeader.split(" ")[1];
+  // const authHeader = req.headers.authorization || req.headers.Authorization;
+  // console.log("Auth Header", authHeader);
+  // if (typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
+  //   return res.sendStatus(401);
+  // }
+  // const token = authHeader.split(" ")[1];
+  const cookies = req.cookies;
+  if (!cookies?.access_token) return res.sendStatus(401);
+  const token = cookies.access_token;
   console.log("Token", token);
+
   if (!token) {
     return res.sendStatus(401);
   }
@@ -48,4 +52,24 @@ export function authenticateToken(
       next();
     }
   );
+}
+
+export function isAdmin(req: Request, res: Response, next: NextFunction) {
+  const user = req.user as User;
+
+  if (user.role !== "admin") {
+    return res.sendStatus(401);
+  }
+
+  next();
+}
+
+export function isUser(req: Request, res: Response, next: NextFunction) {
+  const user = req.user as User;
+
+  if (user.role !== "user") {
+    return res.sendStatus(401);
+  }
+
+  next();
 }

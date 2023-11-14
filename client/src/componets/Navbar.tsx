@@ -1,22 +1,22 @@
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-
 export default function Navbar() {
   const { logout, user } = useAuth();
 
   return (
     <nav className="flex justify-between items-center bg-indigo-500 py-5 text-white px-4">
       <div>
-        <a href="/" className="font-semibold">
+        <Link to="/" className="font-semibold">
           Node Express Typescript Mysql React
-        </a>
+        </Link>
       </div>
       <div>
         <ul className="flex justify-around gap-3 font-semibold items-center">
           <li>
-            <a href="/login">Login</a>
+            <Link to="/login">Login</Link>
           </li>
           <li>
-            <a href="/register">Register</a>
+            <Link to="/register">Register</Link>
           </li>
           <li>
             {user && (

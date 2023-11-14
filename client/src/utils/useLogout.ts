@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 export const useLogout = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { user } = useAuthData();
+  const { data: user } = useAuthData();
 
   const logoutFetch = async () => {
     const response = await fetch("http://localhost:3000/api/users/logout", {
