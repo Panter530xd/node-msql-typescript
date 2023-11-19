@@ -1,10 +1,10 @@
 import { useContext } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { DashboardContext } from "../../context/DashboardContext";
-
+import useAcademyData from "../../utils/useAcademyData";
 
 type EventType = {
   value: string;
@@ -14,10 +14,6 @@ type EventType = {
 type Academy = {
   id: number;
   name: string;
-};
-
-type AcademiesOptions = {
-  allAcademies: Academy[];
 };
 
 type FormData = {
@@ -39,7 +35,7 @@ const options: EventType[] = [
 
 const DashboardCreate = () => {
   const { eventName } = useContext(DashboardContext);
-
+  const academiesOptions: Academy[] = useAcademyData() || [];
   const {
     register,
     handleSubmit,
@@ -47,33 +43,10 @@ const DashboardCreate = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const { data: academiesOptions = { allAcademies: [] } } =
-    useQuery<AcademiesOptions>(["academies"], async () => {
-      try {
-        const response = await fetch(`/api/academies`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch academies");
-        }
-
-        const data = await response.json();
-        console.log(data);
-        return data;
-      } catch (error) {
-        console.error("Error fetching academies:", error);
-        throw error;
-      }
-    });
-
   const createEvent = async (data: FormData) => {
     data.name_of_event = eventName;
 
-    const response = await fetch(`/api/events`, {
+    const response = await fetch(`http://localhost:3000/api/events`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -209,10 +182,10 @@ const DashboardCreate = () => {
             className="bg-gray-50 border border-black text-gray-900 text-base rounded-lg block w-full p-2.5 placeholder:w-full md:px-4 px-2 font-exoFont"
           >
             <option value="">Academies part of the event</option>
-            {Array.isArray(academiesOptions.allAcademies) &&
-              academiesOptions.allAcademies.map((academy) => (
-                <option key={academy.id} value={academy.name}>
-                  {academy.name}
+            {academiesOptions &&
+              academiesOptions?.map((academy) => (
+                <option key={academy?.id} value={academy?.id}>
+                  {academy?.name}
                 </option>
               ))}
           </select>

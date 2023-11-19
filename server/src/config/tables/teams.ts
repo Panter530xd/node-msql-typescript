@@ -19,7 +19,7 @@ export async function createTeamsTable() {
       academy VARCHAR(256) NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
-      FOREIGN KEY (register_id) REFERENCES registration(id),
+      FOREIGN KEY (register_id) REFERENCES registration(id) ON DELETE CASCADE,
       FOREIGN KEY (user_id) REFERENCES users(id)
     )
   `;

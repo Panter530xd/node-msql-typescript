@@ -22,6 +22,7 @@
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
+    "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^4.21.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.47.0",
@@ -29,6 +30,7 @@
     "react-spinners": "^0.13.8",
     "tabler-icons-react": "^1.56.0",
     "universal-cookie": "^6.1.1",
+    "vite-plugin-rewrite-all": "^1.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {

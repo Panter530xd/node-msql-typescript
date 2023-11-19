@@ -2,7 +2,6 @@ import React, { createContext, useContext } from "react";
 import { User, useAuthData } from "../utils/useAuthData";
 import { useLoginMutation } from "../utils/useLoginMutation";
 import { useLogout } from "../utils/useLogout";
-import { useTokenRefresh } from "../utils/useTokenRefresh";
 import Loading from "../componets/Loading";
 
 type AuthContextType = {
@@ -21,7 +20,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const loginMutation = useLoginMutation();
   const { data: user, isLoading } = useAuthData();
   const logoutMutation = useLogout();
-  useTokenRefresh();
 
   const contextValue: AuthContextType = {
     user,

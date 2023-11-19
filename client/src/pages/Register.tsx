@@ -191,7 +191,7 @@ const RegisterUser: React.FC = () => {
                   }`}
                   placeholder="••••••••"
                 />
-                {errorMessages.email && (
+                {errorMessages.password && (
                   <p className="text-xs text-red-500">
                     {errorMessages.password}
                   </p>

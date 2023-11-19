@@ -1,29 +1,36 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { User } from "./useAuthData";
 import { useNavigate } from "react-router-dom";
-import Cookies from "universal-cookie";
-import useLogin from "./useLogin";
 
 export const useLoginMutation = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const loginUser = useLogin();
 
-  const cookies = new Cookies(null, { path: "/" });
-  console.log("Cookies", cookies.getAll());
+  const allowedRolesAdmin = ["admin"];
+  const allowedRolesUser = ["user"];
+
+  const loginUser = async (data: { email: string; password: string }) => {
+    const response = await fetch("http://localhost:3000/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message);
+    }
+
+    return await response.json();
+  };
 
   const loginMutation = useMutation(
     async (data: { email: string; password: string }) => {
       const loginData = await loginUser(data);
-
-      const newAccessToken = loginData.accessToken;
-
-      if (!newAccessToken) {
-        throw new Error("Access token not found in login response");
-      }
-
-      queryClient.setQueryData<string>(["accessToken"], newAccessToken);
 
       return loginData;
     },
@@ -31,24 +38,27 @@ export const useLoginMutation = () => {
       onSuccess: (loginData) => {
         queryClient.setQueryData<User | undefined>(["user"], {
           ...loginData,
-          accessToken: loginData.accessToken,
         });
-        navigate("/");
+
         toast.success("User successfully logged in");
-        queryClient.invalidateQueries({
-          queryKey: ["accessToken"],
-        });
+        if (loginData && loginData.role) {
+          const userRoles: string[] = loginData.role.split(",");
+          console.log("USER Roles", userRoles);
+
+          if (userRoles.some((role) => allowedRolesAdmin.includes(role))) {
+            navigate("/dashboard");
+          } else if (
+            userRoles.some((role) => allowedRolesUser.includes(role))
+          ) {
+            navigate("/");
+          }
+        }
       },
       onError: (error: Error) => {
         toast.error(error.message);
       },
     }
   );
-
-  const accessToken = cookies.get("access_token");
-  console.log("Cokies", accessToken);
-
-  useQuery<string>(["accessToken"], { initialData: accessToken });
 
   return loginMutation;
 };

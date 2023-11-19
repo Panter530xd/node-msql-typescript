@@ -1,35 +1,25 @@
 import { useLocation, Outlet, Navigate } from "react-router-dom";
 import { useAuthData } from "../utils/useAuthData";
-import { useEffect } from "react";
 
-const RequireAuth = ({ allowedRoles }: { allowedRoles: string }) => {
+const RequireAuth = ({ allowedRoles }: { allowedRoles: string[] }) => {
   const { data: user, isLoading } = useAuthData();
 
   const location = useLocation();
 
-  useEffect(() => {
-    console.log("USER", user);
-
-    // Ensure that user data is loaded before making the comparison
-    // if (!isLoading && user) {
-    //   console.log("USER", user.role);
-    //   console.log("USERallowedRoles", allowedRoles);
-    //   console.log(
-    //     "USER Compare",
-    //     user.role && allowedRoles.includes(user.role)
-    //   );
-    // }
-  }, [user]);
+  console.log("USER", user);
 
   if (!user) {
     return null;
   }
 
   if (isLoading || user === null) {
-    return <Navigate to={"/login"} />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
+  console.log("allowedRoles", allowedRoles);
+  const userRoles = user.role ? user.role.split(",") : [];
+  const hasAllRoles = allowedRoles.every((role) => userRoles.includes(role));
 
-  return user.role && allowedRoles.includes(user?.role) ? (
+  return hasAllRoles ? (
     <Outlet />
   ) : user ? (
     <Navigate to="/unauthorized" state={{ from: location }} replace />

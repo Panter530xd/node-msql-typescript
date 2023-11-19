@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { z, ZodError } from "zod";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
-
 import { useLoginMutation } from "../utils/useLoginMutation";
-interface FormValues {
+
+export interface FormValues {
   email: string;
   password: string;
 }
 
-interface ErrorMessages {
+export interface ErrorMessages {
   email?: string;
   password?: string;
 }
@@ -33,35 +33,6 @@ const Login: React.FC = () => {
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({});
 
   const loginMutation = useLoginMutation();
-
-  // const mutation = useMutation(
-  //   async (data: FormValues) => {
-  //     if (!data.email || !data.password) {
-  //       throw new Error("Please provide both email and password");
-  //     }
-
-  //     const validatedData = loginSchema.parse(data);
-
-  //     return login(validatedData.email, validatedData.password);
-  //   },
-  //   {
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries(["user"]);
-  //       setFormValues({ email: "", password: "" });
-  //       navigate("/");
-  //       toast.success("User Success login");
-  //     },
-  //     onError: (error: any) => {
-  //       if (typeof error === "object") {
-  //         const errorMessage = error.message || "Login failed";
-  //         toast.error(errorMessage);
-  //       } else {
-  //         console.error("Error during login:", error);
-  //         toast.error("Internal Server Error");
-  //       }
-  //     },
-  //   }
-  // );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -169,6 +140,15 @@ const Login: React.FC = () => {
                   className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Register here
+                </Link>
+              </p>
+              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                Forgot Password?
+                <Link
+                  to="/forgot-password"
+                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                >
+                  Click here
                 </Link>
               </p>
             </form>

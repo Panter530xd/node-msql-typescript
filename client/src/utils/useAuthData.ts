@@ -1,4 +1,5 @@
-import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 export type User = {
   id: number;
@@ -9,32 +10,47 @@ export type User = {
 
 export const useAuthData = () => {
   const queryClient = useQueryClient();
-
-  const isFetching = useIsFetching();
+  const navigate = useNavigate();
 
   return useQuery(
     ["user"],
     async (): Promise<User> => {
       try {
-        const accessToken = queryClient.getQueryData<string>(["accessToken"]);
-        console.log("ACCESS TOKEN", accessToken);
-        if (!accessToken) {
-          throw new Error("Access token not available");
-        }
         const response = await fetch(
           "http://localhost:3000/api/protected-route",
           {
             method: "GET",
             credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
           }
         );
 
         if (response.status === 401) {
-          throw new Error("User not authenticated");
+          queryClient.setQueryData(["user"], undefined);
+          navigate("/login");
+          return Promise.reject(new Error("User not authenticated"));
+        }
+
+        if (response.status === 403) {
+          const refreshResponse = await fetch(
+            "http://localhost:3000/api/users/refresh",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+            }
+          );
+
+          if (refreshResponse.ok) {
+            const refreshedData = await refreshResponse.json();
+            queryClient.invalidateQueries(["user"]);
+            return refreshedData.user;
+          } else {
+            queryClient.setQueryData(["user"], undefined);
+            navigate("/login");
+            return Promise.reject(new Error("Failed to refresh token"));
+          }
         }
 
         if (!response.ok) {
@@ -43,23 +59,19 @@ export const useAuthData = () => {
 
         const userData = await response.json();
         console.log("userData from server:", userData);
+
         return {
-          accessToken: userData.user.accessToken || "",
+          accessToken: userData.accessToken,
           ...userData.user,
           role: userData.user.role,
         } as User;
       } catch (error) {
-        if (isFetching) {
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          return queryClient.fetchQuery(["accessToken"]);
-        }
-
         console.error("Error fetching user data:", error);
         throw error;
       }
     },
     {
-      retry: false,
+      retry: false, // Disable automatic retries
       retryDelay: 1000,
       initialData: undefined,
     }

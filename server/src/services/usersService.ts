@@ -61,11 +61,11 @@ export async function loginUser(req: Request, res: Response) {
     const accessToken = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET as string,
-      { expiresIn: "1h" }
+      { expiresIn: "30s" }
     );
 
     const refreshToken = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email, role: user.role },
       process.env.JWT_REFRESH as string,
       { expiresIn: "1d" }
     );
@@ -78,10 +78,9 @@ export async function loginUser(req: Request, res: Response) {
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
       domain: "localhost",
-      path: "/",
     });
 
-    res.cookie("token", refreshToken, {
+    res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
