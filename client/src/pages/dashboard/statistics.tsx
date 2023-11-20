@@ -38,7 +38,7 @@ const DashboardCreate = () => {
   }
 
   const academiesPartChartData: ChartData<"pie", number[], string> = {
-    labels: academiesPartStats.map((data, index) => data.name),
+    labels: academiesPartStats.map((data) => data.name),
     datasets: [
       {
         data: academiesPartStats.map((data) => data.count),
