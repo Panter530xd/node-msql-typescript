@@ -3,9 +3,10 @@ import Heder from "../componets/heder/Heder";
 import { Link, useLocation, useOutlet } from "react-router-dom";
 import { Menu2 } from "tabler-icons-react";
 import { useState } from "react";
-
+import { CSVLink } from "react-csv";
 import React, { useContext } from "react";
 import { DashboardContext } from "../context/DashboardContext";
+import useERegistrationData from "../utils/useRegistrationData";
 
 type DashboardLinkProps = {
   to?: string;
@@ -40,6 +41,7 @@ function DashboardLink({ to, onClick, children }: DashboardLinkProps) {
 }
 
 export default function DashboardLayout() {
+  const { registrationData } = useERegistrationData();
   const { eventName, setEventName } = useContext(DashboardContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const outlet = useOutlet();
@@ -47,6 +49,10 @@ export default function DashboardLayout() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  if (!registrationData) {
+    return;
+  }
+  const registrationTeams = registrationData.map((table) => table);
   return (
     <div className="bg-dashboard relative">
       <Heder />
@@ -75,16 +81,15 @@ export default function DashboardLayout() {
                 Statistics
               </DashboardLink>
               <DashboardLink to="/dashboard/results">Results</DashboardLink>
-              {/* <DashboardLink onClick={mutate}>
-                <div className="bg-greenis text-white py-2 px-5 rounded-lg font-medium">
-                  Log out
-                </div>
-              </DashboardLink> */}
+
               <div className="ml-auto">
                 <DashboardLink>
-                  <div className="bg-orange text-black py-2 px-10 rounded-lg whitespace-nowrap font-semibold">
+                  <CSVLink
+                    data={registrationTeams}
+                    className="bg-orange text-black py-2 px-10 rounded-lg whitespace-nowrap font-semibold"
+                  >
                     Export as Excel sheet
-                  </div>
+                  </CSVLink>
                 </DashboardLink>
               </div>
             </div>

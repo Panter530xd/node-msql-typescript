@@ -34,7 +34,6 @@ export async function createTeamsTable() {
 }
 
 export async function insertTeamData(data: TeamData) {
-  // Check if the data already exists
   const checkDuplicateSql = `
     SELECT id
     FROM teams

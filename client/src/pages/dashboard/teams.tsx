@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { DotsVertical } from "tabler-icons-react";
-
 import { generateRandomTeams } from "../../utils/utils";
 import { deleteTeam } from "../../utils/handleDeleteTeam";
 import AlertDialog from "../../componets/ui/AlertDialog";
@@ -32,6 +31,31 @@ const DashboardCreate = () => {
   const [teams, setTeams] = useState<Team[][]>([]);
   const [editedTeam, setEditedTeam] = useState<Team | null>(null);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
+
+  if (!registrationData) {
+    return;
+  }
+
+  // const exportToCSV = () => {
+  //   const csvContent =
+  //     "data:text/csv;charset=utf-8," +
+  //     teams
+  //       .map((row) =>
+  //         row
+  //           .map(
+  //             (cell) =>
+  //               `"${cell.id}","${cell.first_name}","${cell.last_name}","${cell.academy}"`
+  //           )
+  //           .join(",")
+  //       )
+  //       .join("\n");
+  //   const encodedUri = encodeURI(csvContent);
+  //   const link = document.createElement("a");
+  //   link.setAttribute("href", encodedUri);
+  //   link.setAttribute("download", "teams.csv");
+  //   document.body.appendChild(link);
+  //   link.click();
+  // };
 
   useEffect(() => {
     if (registrationData && registrationData.length > 0) {
