@@ -110,23 +110,23 @@ const DashboardCreate = () => {
       draggedTeam
     );
 
+    console.log("updatedTeams", updatedTeams);
+
     // Flatten the teams array
     const flatTeams = updatedTeams.flat();
-    const chagetTeamsPositions = registrationData.filter((user) => {
-      const updatedUser = flatTeams.find(
-        (fletTeamUser) => fletTeamUser.id === user.id
-      );
-      if (!updatedUser) {
-        return false;
-      }
-      return user.position !== updatedUser.position;
+
+    const changedTeams = flatTeams.filter((team, index) => {
+      const originalPosition = team.position;
+      const newPosition = index + 1;
+      return originalPosition !== newPosition;
     });
-    console.log("chagetTeamsPositions", chagetTeamsPositions);
+
+    console.log("changedTeams", changedTeams);
 
     try {
       const putResponse = await axios.put(
         `http://localhost:3000/api/registration`,
-        { allTeamsInState: flatTeams },
+        { allTeamsInState: changedTeams },
         {
           headers: {
             "Content-Type": "application/json",
@@ -138,7 +138,7 @@ const DashboardCreate = () => {
         refreshRegistrationData();
 
         console.log("Team positions updated successfully");
-        console.log({ teams: flatTeams });
+        console.log({ teams: changedTeams });
       } else {
         console.error("Failed to update team positions");
       }
