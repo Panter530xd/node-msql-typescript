@@ -3,6 +3,8 @@
   "builds": [{ "src": "*.js", "use": "@vercel/node" }],
   "routes": [{ "src": "/(.*)", "dest": "/" }],
   "functions": {
-    "output": "dist"
+    "output": {
+      "distDir": "dist"
+    }
   }
 }
