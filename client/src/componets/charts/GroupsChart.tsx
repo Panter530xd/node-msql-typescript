@@ -8,7 +8,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  scales,
 } from "chart.js";
 import useRegistrationData from "../../utils/useRegistrationData";
 
