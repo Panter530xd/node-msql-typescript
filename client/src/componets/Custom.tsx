@@ -11,7 +11,6 @@ interface CustomTimePickerProps {
 }
 
 const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
-  id,
   placeholder,
   value,
   onChange,
@@ -58,7 +57,6 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
         setInputValue(value || "");
       }, [value]);
 
-
       return (
         <div
           className="flex justify-between items-center md:w-32 w-20 h-10 rounded-md border border-gray-300 px-2 cursor-pointer"
@@ -80,7 +78,6 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
 
   return (
     <div>
-     
       <DatePicker
         selected={selectedTime}
         onChange={handleTimeChange}
