@@ -51,7 +51,6 @@ router.put("/registration", async (req: Request, res: Response) => {
   try {
     const { allTeamsInState } = req.body;
 
-    // Ensure that the 'allTeamsInState' data is valid
     if (!Array.isArray(allTeamsInState)) {
       return res.status(400).json({ error: "Invalid data format" });
     }

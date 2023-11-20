@@ -112,6 +112,16 @@ const DashboardCreate = () => {
 
     // Flatten the teams array
     const flatTeams = updatedTeams.flat();
+    const chagetTeamsPositions = registrationData.filter((user) => {
+      const updatedUser = flatTeams.find(
+        (fletTeamUser) => fletTeamUser.id === user.id
+      );
+      if (!updatedUser) {
+        return false;
+      }
+      return user.position !== updatedUser.position;
+    });
+    console.log("chagetTeamsPositions", chagetTeamsPositions);
 
     try {
       const putResponse = await axios.put(
