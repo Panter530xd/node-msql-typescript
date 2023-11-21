@@ -1,7 +1,6 @@
-// File: AlertDialog.tsx
 import React from "react";
 import { Transition } from "@headlessui/react";
-import { Trash, Edit } from "tabler-icons-react";
+import { IconTrash, IconEdit } from "@tabler/icons-react";
 import {
   CancelButton,
   EditButton,
@@ -49,10 +48,10 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
           <div className="mt-4 flex justify-end space-x-2">
             <CancelButton onClick={() => setIsOpen(false)}>Cancel</CancelButton>
             <EditButton onClick={onEdit}>
-              <Edit />
+              <IconEdit />
             </EditButton>
             <DeleteButton onClick={handleConfirm}>
-              <Trash />
+              <IconTrash />
             </DeleteButton>
           </div>
         </div>

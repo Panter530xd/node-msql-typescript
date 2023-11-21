@@ -1,7 +1,7 @@
 import Footer from "../componets/Footer";
 import Heder from "../componets/heder/Heder";
 import { Link, useLocation, useOutlet } from "react-router-dom";
-import { Menu2 } from "tabler-icons-react";
+import { IconMenu2 } from "@tabler/icons-react";
 import { useState } from "react";
 import { CSVLink } from "react-csv";
 import React, { useContext } from "react";
@@ -150,7 +150,7 @@ export default function DashboardLayout() {
                   onClick={toggleMenu}
                   className="flex items-center rounded-lg absolute top-[75px] left-5"
                 >
-                  <Menu2 size={35} />
+                  <IconMenu2 size={35} />
                 </button>
               )}
             </div>
