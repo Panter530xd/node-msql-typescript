@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { IconClock } from "@tabler/icons-react";
+
+import IconClock from "../images/svg/IconClock.svg";
 
 interface CustomTimePickerProps {
   id: string;
@@ -63,7 +64,7 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
           onClick={onClick}
         >
           <span className="mr-2">{inputValue || placeholder}</span>
-          <IconClock size={20} className="text-gray-500" />
+          <img src={IconClock} alt="icon clock" width={20} height={20} />
           <input
             type="text"
             className="hidden"

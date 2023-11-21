@@ -92,7 +92,7 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="py-12">
+    <div className="py-12 font-exoFont">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-4 md:w-6/12 w-11/12 mx-auto md:p-20 p-5 rounded-lg shadow-lg"
