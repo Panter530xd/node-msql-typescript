@@ -59,13 +59,13 @@ function App() {
                 >
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/dashboard/*" element={<DashboardLayout />}>
-                    <Route path="description" element={<DashboardCreate />} />
-                    <Route path="agenda" element={<DashboardCreateAgenda />} />
+                    <Route path="/description" element={<DashboardCreate />} />
+                    <Route path="/agenda" element={<DashboardCreateAgenda />} />
                     <Route
-                      path="statistics"
+                      path="/statistics"
                       element={<DashboardCreateStatistic />}
                     />
-                    <Route path="teams" element={<DashboardCreateTeams />} />
+                    <Route path="/teams" element={<DashboardCreateTeams />} />
                   </Route>
                 </Route>
                 <Route path="/forgot-password" element={<ForgotPassword />} />
