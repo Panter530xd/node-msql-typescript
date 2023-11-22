@@ -1,6 +1,6 @@
 import Footer from "../componets/Footer";
 import Heder from "../componets/heder/Heder";
-import { Link, useLocation, useOutlet } from "react-router-dom";
+import { Link, useLocation, Outlet } from "react-router-dom";
 import Menu2 from "../images/svg/Menu2.svg";
 import { useState } from "react";
 import { CSVLink } from "react-csv";
@@ -44,7 +44,7 @@ export default function DashboardLayout() {
   const { registrationData } = useERegistrationData();
   const { eventName, setEventName } = useContext(DashboardContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const outlet = useOutlet();
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -151,7 +151,7 @@ export default function DashboardLayout() {
             </div>
           </div>
         </nav>
-        <section className="w-full">{outlet}</section>
+        <section className="w-full">{<Outlet />}</section>
       </main>
       <Footer />
     </div>

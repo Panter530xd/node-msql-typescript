@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { DashboardContext } from "../../context/DashboardContext";
 import useAcademyData from "../../utils/useAcademyData";
 
+
 type EventType = {
   value: string;
   label: string;
