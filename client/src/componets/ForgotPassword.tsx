@@ -31,7 +31,7 @@ export default function ForgotPassword() {
       const validatedData = ForgotPasswordSchema.parse(data);
 
       const response = await fetch(
-        "http://localhost:3000/api/forgot-password",
+        `${import.meta.env.VITE_REACT_APP_API_URL}/api/forgot-password`,
         {
           method: "POST",
           headers: {

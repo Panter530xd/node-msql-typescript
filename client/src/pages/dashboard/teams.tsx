@@ -36,27 +36,6 @@ const DashboardCreate = () => {
     return;
   }
 
-  // const exportToCSV = () => {
-  //   const csvContent =
-  //     "data:text/csv;charset=utf-8," +
-  //     teams
-  //       .map((row) =>
-  //         row
-  //           .map(
-  //             (cell) =>
-  //               `"${cell.id}","${cell.first_name}","${cell.last_name}","${cell.academy}"`
-  //           )
-  //           .join(",")
-  //       )
-  //       .join("\n");
-  //   const encodedUri = encodeURI(csvContent);
-  //   const link = document.createElement("a");
-  //   link.setAttribute("href", encodedUri);
-  //   link.setAttribute("download", "teams.csv");
-  //   document.body.appendChild(link);
-  //   link.click();
-  // };
-
   useEffect(() => {
     if (registrationData && registrationData.length > 0) {
       if (registrationData) {
@@ -125,7 +104,7 @@ const DashboardCreate = () => {
 
     try {
       const putResponse = await axios.put(
-        `http://localhost:3000/api/registration`,
+        `${import.meta.env.VITE_REACT_APP_API_URL}/api/registration`,
         { allTeamsInState: changedTeams },
         {
           headers: {
@@ -175,7 +154,9 @@ const DashboardCreate = () => {
   const handleEditFormSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/registration/${editedTeam?.id}`,
+        `${import.meta.env.VITE_REACT_APP_API_URL}/api/registration/${
+          editedTeam?.id
+        }`,
         editedTeam,
         {
           headers: {

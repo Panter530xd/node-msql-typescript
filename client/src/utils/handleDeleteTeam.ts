@@ -16,7 +16,7 @@ export const deleteTeam = async (
 ) => {
   try {
     const response = await axios.delete(
-      `http://localhost:3000/api/registration`,
+      `${import.meta.env.VITE_REACT_APP_API_URL}/api/registration`,
       {
         headers: {
           "Content-Type": "application/json",

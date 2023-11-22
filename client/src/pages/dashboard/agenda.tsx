@@ -30,7 +30,7 @@ const DashboardCreate = () => {
   } = useForm<FormData>();
 
   const createAgendaItem = async (data: FormData) => {
-    const response = await fetch(`http://localhost:3000/api/agenda`, {
+    const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/agenda`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

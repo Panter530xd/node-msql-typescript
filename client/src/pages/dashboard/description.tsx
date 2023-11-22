@@ -46,7 +46,7 @@ const DashboardCreate = () => {
   const createEvent = async (data: FormData) => {
     data.name_of_event = eventName;
 
-    const response = await fetch(`http://localhost:3000/api/events`, {
+    const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/events`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -8,10 +8,13 @@ export const useLogout = () => {
   const navigate = useNavigate();
 
   const logoutFetch = async () => {
-    const response = await fetch("http://localhost:3000/api/users/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_REACT_APP_API_URL}/api/users/logout`,
+      {
+        method: "POST",
+        credentials: "include",
+      }
+    );
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.message);

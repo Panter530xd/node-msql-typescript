@@ -128,11 +128,6 @@ export default function DashboardLayout() {
                     <DashboardLink to="/dashboard/results" onClick={toggleMenu}>
                       Results
                     </DashboardLink>
-                    {/* <DashboardLink onClick={mutate}>
-                      <div className="bg-greenis text-white py-2 px-5 rounded-lg font-medium">
-                        Log out
-                      </div>
-                    </DashboardLink> */}
                     <div>
                       <DashboardLink>
                         <div

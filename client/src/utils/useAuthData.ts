@@ -32,7 +32,7 @@ export const useAuthData = () => {
 
         if (response.status === 403) {
           const refreshResponse = await fetch(
-            "http://localhost:3000/api/users/refresh",
+            `${import.meta.env.VITE_REACT_APP_API_URL}/api/users/refresh`,
             {
               method: "GET",
               headers: {

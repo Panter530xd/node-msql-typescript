@@ -11,7 +11,7 @@ export const useLoginMutation = () => {
   const allowedRolesUser = ["user"];
 
   const loginUser = async (data: { email: string; password: string }) => {
-    const response = await fetch("http://localhost:3000/api/users/login", {
+    const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/users/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

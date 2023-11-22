@@ -37,7 +37,9 @@ export default function useERegistrationData() {
   const queryClient = useQueryClient();
 
   const fetchRegistrationData = async () => {
-    const response = await axios.get(`http://localhost:3000/api/registration`);
+    const response = await axios.get(
+      `${import.meta.env.VITE_REACT_APP_API_URL}/api/registration`
+    );
     const data: RegistrationData[] = response.data;
 
     const foodAlergiesCount: { [key: string]: number } = data.reduce(

@@ -29,7 +29,9 @@ export default function useEventsData() {
   const queryClient = useQueryClient();
 
   const fetchEventData = async () => {
-    const response = await axios.get(`http://localhost:3000/api/events`);
+    const response = await axios.get(
+      `${import.meta.env.VITE_REACT_APP_API_URL}/api/events`
+    );
     const data: EventData[] = response.data;
 
     const academiesPartStatsCounts: { [key: string]: number } = data.reduce(
