@@ -9,7 +9,6 @@ import DashboardCreateTeams from "./pages/dashboard/teams.tsx";
 import DashboardCreate from "./pages/dashboard/description.tsx";
 import DashboardCreateAgenda from "./pages/dashboard/agenda.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Navbar from "../src/componets/Navbar";
 import { Toaster } from "react-hot-toast";
 import RequireAuth from "./componets/RequireAuth.tsx";
