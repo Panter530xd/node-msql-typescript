@@ -77,7 +77,6 @@ export async function loginUser(req: Request, res: Response) {
       secure: true,
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
-      domain: "localhost",
     });
 
     res.cookie("refresh_token", refreshToken, {
@@ -85,7 +84,6 @@ export async function loginUser(req: Request, res: Response) {
       secure: true,
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
-      domain: "localhost",
     });
 
     console.log("Generated Refresh Token", refreshToken);
