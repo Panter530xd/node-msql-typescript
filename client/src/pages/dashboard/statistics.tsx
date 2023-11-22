@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import useEventsData from "../../utils/useEventsData";
 import { Link } from "react-router-dom";
 
-const DashboardCreate = () => {
+const DashboardCreateStatistic = () => {
   const { academiesPartStats, eventTypeStats, isLoading, isError } =
     useEventsData();
   console.log("academiesPartStats", academiesPartStats);
@@ -190,4 +190,4 @@ const DashboardCreate = () => {
   );
 };
 
-export default DashboardCreate;
+export default DashboardCreateStatistic;

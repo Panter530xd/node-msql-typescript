@@ -21,7 +21,7 @@ interface FormData {
   presentationsTo: string;
 }
 
-const DashboardCreate = () => {
+const DashboardCreateAgenda = () => {
   const {
     control,
     handleSubmit,
@@ -30,13 +30,16 @@ const DashboardCreate = () => {
   } = useForm<FormData>();
 
   const createAgendaItem = async (data: FormData) => {
-    const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/agenda`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_REACT_APP_API_URL}/api/agenda`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to create agenda");
@@ -498,4 +501,4 @@ const DashboardCreate = () => {
   );
 };
 
-export default DashboardCreate;
+export default DashboardCreateAgenda;

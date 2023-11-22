@@ -33,7 +33,7 @@ const options: EventType[] = [
   { value: "online", label: "Online" },
 ];
 
-const DashboardCreate = () => {
+const DashboardDescription = () => {
   const { eventName } = useContext(DashboardContext);
   const academiesOptions: Academy[] = useAcademyData() || [];
   const {
@@ -46,13 +46,16 @@ const DashboardCreate = () => {
   const createEvent = async (data: FormData) => {
     data.name_of_event = eventName;
 
-    const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/api/events`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_REACT_APP_API_URL}/api/events`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to create event");
@@ -243,4 +246,4 @@ const DashboardCreate = () => {
   );
 };
 
-export default DashboardCreate;
+export default DashboardDescription;

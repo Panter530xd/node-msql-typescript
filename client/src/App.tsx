@@ -6,7 +6,7 @@ import NoPage from "./pages/NoPage";
 import Dashboard from "./pages/dashboard";
 import DashboardCreateStatistic from "./pages/dashboard/statistics.tsx";
 import DashboardCreateTeams from "./pages/dashboard/teams.tsx";
-import DashboardCreate from "./pages/dashboard/description.tsx";
+import DashboardDescription  from "./pages/dashboard/description.tsx";
 import DashboardCreateAgenda from "./pages/dashboard/agenda.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Navbar from "../src/componets/Navbar";
@@ -58,7 +58,7 @@ function App() {
                 >
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/dashboard/*" element={<DashboardLayout />}>
-                    <Route path="description" element={<DashboardCreate />} />
+                    <Route path="description" element={<DashboardDescription />} />
                     <Route path="agenda" element={<DashboardCreateAgenda />} />
                     <Route
                       path="statistics"

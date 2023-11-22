@@ -23,7 +23,7 @@ interface Team {
   position?: number;
 }
 
-const DashboardCreate = () => {
+const DashboardCreateTeams = () => {
   const { registrationData, refreshRegistrationData, isError, isLoading } =
     useRegistrationData();
   const [showPopUp, setShowPopUp] = useState(false);
@@ -363,4 +363,4 @@ const DashboardCreate = () => {
   );
 };
 
-export default DashboardCreate;
+export default DashboardCreateTeams;
