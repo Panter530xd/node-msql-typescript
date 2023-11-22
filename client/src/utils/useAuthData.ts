@@ -17,7 +17,7 @@ export const useAuthData = () => {
     async (): Promise<User> => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/protected-route",
+          `${import.meta.env.VITE_REACT_APP_API_URL}/api/protected-route`,
           {
             method: "GET",
             credentials: "include",
