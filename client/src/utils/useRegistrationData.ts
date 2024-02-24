@@ -18,6 +18,7 @@ export interface RegistrationData {
   accept_terms: boolean;
   createdAt: string;
   updatedAt: string;
+  position: number;
 }
 
 interface RegisterStat {
@@ -36,8 +37,10 @@ export default function useERegistrationData() {
   const queryClient = useQueryClient();
 
   const fetchRegistrationData = async () => {
-    const response = await axios.get(`/api/registration`);
-    const data: RegistrationData[] = response.data.allRegistration;
+    const response = await axios.get(
+      `${import.meta.env.VITE_REACT_APP_API_URL}/api/registration`
+    );
+    const data: RegistrationData[] = response.data;
 
     const foodAlergiesCount: { [key: string]: number } = data.reduce(
       (counts, event) => {
@@ -51,7 +54,7 @@ export default function useERegistrationData() {
       {} as { [key: string]: number }
     );
 
-    const foodAlergiesPartStats: RegisterStat[] = Object.keys(
+    const computedFoodAlergiesPartStats: RegisterStat[] = Object.keys(
       foodAlergiesCount
     ).map((foodPart) => ({
       name: foodPart,
@@ -70,21 +73,21 @@ export default function useERegistrationData() {
       {} as { [key: string]: number }
     );
 
-    const foodPreferencesStats: RegisterStat[] = Object.keys(
+    const computedFoodPreferencesStats: RegisterStat[] = Object.keys(
       foodPreferencesStatsCounts
     ).map((type) => ({
       name: type,
       count: foodPreferencesStatsCounts[type],
     }));
 
-    setFoodAlergiesPartStats(foodAlergiesPartStats);
-    setFoodPreferencesStats(foodPreferencesStats);
+    setFoodAlergiesPartStats(computedFoodAlergiesPartStats);
+    setFoodPreferencesStats(computedFoodPreferencesStats);
 
     return data;
   };
   const mutation = useMutation({
     mutationFn: fetchRegistrationData,
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["registrationData"] });
     },
   });
@@ -111,5 +114,6 @@ export default function useERegistrationData() {
     registrationData,
     isLoading,
     isError,
+    refreshRegistrationData,
   };
 }

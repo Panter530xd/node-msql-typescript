@@ -27,7 +27,9 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({
   useEffect(() => {
     const fetchEventName = async () => {
       try {
-        const response = await axios.get(`/api/events`);
+        const response = await axios.get(
+          `${import.meta.env.VITE_REACT_APP_API_URL}/api/academies`
+        );
         const data = response.data;
 
         if (data && data.allEvents && data.allEvents.length > 0) {

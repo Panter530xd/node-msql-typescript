@@ -1,6 +1,4 @@
-
 import { useForm, Controller } from "react-hook-form";
-
 
 import CustomTimePicker from "../../componets/Custom";
 import toast from "react-hot-toast";
@@ -23,7 +21,7 @@ interface FormData {
   presentationsTo: string;
 }
 
-const DashboardCreate = () => {
+const DashboardCreateAgenda = () => {
   const {
     control,
     handleSubmit,
@@ -32,13 +30,16 @@ const DashboardCreate = () => {
   } = useForm<FormData>();
 
   const createAgendaItem = async (data: FormData) => {
-    const response = await fetch(`/api/agenda`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_REACT_APP_API_URL}/api/agenda`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to create agenda");
@@ -298,8 +299,6 @@ const DashboardCreate = () => {
               )}
             </div>
           </div>
-
-          {/* Add more fields here as needed */}
         </div>
 
         <div className="md:w-7/12 w-11/12 mx-auto max-w-screen-xl space-y-4 font-exoFont">
@@ -502,6 +501,4 @@ const DashboardCreate = () => {
   );
 };
 
-
-
-export default DashboardCreate;
+export default DashboardCreateAgenda;

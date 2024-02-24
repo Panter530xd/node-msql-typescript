@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import { registerUser, loginUser } from "../services/usersService";
-import { authenticateToken } from "../authMiddleware";
+import { authenticateTokenMiddleware } from "../authMiddleware";
 import { databaseConection } from "../config/database";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -41,8 +41,8 @@ router.post("/login", loginUser);
 
 router.get("/refresh", async (req: Request, res: Response) => {
   const cookies = req.cookies;
-  if (!cookies?.token) return res.sendStatus(401);
-  const refreshToken = cookies.token;
+  if (!cookies?.refresh_token) return res.sendStatus(401);
+  const refreshToken = cookies.refresh_token;
 
   try {
     if (!refreshToken) {
@@ -71,12 +71,18 @@ router.get("/refresh", async (req: Request, res: Response) => {
       console.error("Invalid or mismatched refresh token");
       return res.sendStatus(403);
     }
+    console.log("Payload before signing:", {
+      id: decoded.id,
+      email: decoded.email,
+      role: userRole,
+    });
 
     const accessToken = jwt.sign(
       { id: decoded.id, email: decoded.email, role: userRole },
       process.env.JWT_SECRET as string,
       { expiresIn: "5m" }
     );
+    console.log("Access Token:", accessToken);
 
     res.json({
       accessToken,
@@ -109,11 +115,11 @@ async function getRefreshTokenFromDb(userId: string): Promise<string | null> {
 
 router.post(
   "/logout",
-  authenticateToken,
+  authenticateTokenMiddleware,
   async (req: Request, res: Response) => {
     const userId = (req.user as { id: string }).id;
 
-    res.clearCookie("token");
+    res.clearCookie("refresh_token");
     res.clearCookie("access_token");
 
     try {

@@ -17,7 +17,7 @@ declare global {
   }
 }
 
-export function authenticateToken(
+export async function authenticateTokenMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
@@ -33,25 +33,68 @@ export function authenticateToken(
   // if (!cookies?.access_token) return res.sendStatus(401);
   // const token = cookies.access_token;
   // console.log("Token", token);
+  const cookies = req.cookies;
+  if (!cookies?.access_token && !cookies?.refresh_token)
+    return res.sendStatus(401);
 
-  if (!token) {
+  const accessToken = cookies.access_token;
+  const refreshToken = cookies.refresh_token;
+
+  if (!accessToken && !refreshToken) {
     return res.sendStatus(401);
   }
 
-  jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    (err: JsonWebTokenError | null, user: User | undefined) => {
-      if (err) {
-        console.error("JWT verification error:", err);
+  try {
+    const user = await verifyAccessToken(accessToken);
+    req.user = user;
+    next();
+  } catch (err) {
+    if (err.name === "TokenExpiredError" && refreshToken) {
+      try {
+        const newUser = await verifyRefreshToken(refreshToken);
+        req.user = newUser;
+        next();
+      } catch (refreshError) {
+        console.error("Error during token refresh:", refreshError);
         return res.sendStatus(403);
       }
-
-      req.user = user;
-
-      next();
+    } else {
+      console.error("JWT verification error:", err);
+      return res.sendStatus(403);
     }
-  );
+  }
+}
+
+async function verifyAccessToken(token: string): Promise<User> {
+  return new Promise((resolve, reject) => {
+    jwt.verify(
+      token,
+      process.env.JWT_SECRET as string,
+      (err: JsonWebTokenError | null, user: User | undefined) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(user);
+        }
+      }
+    );
+  });
+}
+
+async function verifyRefreshToken(token: string): Promise<User> {
+  return new Promise((resolve, reject) => {
+    jwt.verify(
+      token,
+      process.env.JWT_REFRESH as string,
+      (err: JsonWebTokenError | null, user: User | undefined) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(user);
+        }
+      }
+    );
+  });
 }
 
 export function isAdmin(req: Request, res: Response, next: NextFunction) {

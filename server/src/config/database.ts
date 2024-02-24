@@ -11,6 +11,8 @@ import { createTeamsTable, insertTeamData } from "./tables/teams";
 import { createUsersTable } from "./tables/users";
 import { TeamData } from "../../src/config/tables/teams";
 import refreshToken from "./tables/refresh_token";
+import { createEventsTable } from "./tables/events";
+import { createAgendaTable } from "./tables/agenda";
 dotenv.config();
 
 const pool = mysql.createPool({
@@ -35,9 +37,9 @@ export async function databaseConection(sql: string, values?: any) {
 
 export async function initializeDatabase() {
   try {
-    await createTeamsTable();
     await refreshToken();
-
+    await createEventsTable();
+    await createAgendaTable();
     const selectSql = `
       SELECT r.id as register_id, u.id as user_id, r.first_name, r.last_name, r.academy
       FROM registration r

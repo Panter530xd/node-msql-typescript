@@ -9,12 +9,15 @@ export type Group = {
 export default function useGroupsData() {
   const { data: groupsQuery } = useQuery<Group[]>(["groups"], async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/groups`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_API_URL}/api/groups`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch groups");

@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import { DotsVertical } from "tabler-icons-react";
-
-import useERegistrationData from "../../utils/useRegistrationData";
-
+import DotsVertical from "../../images/svg/DotsVertical.svg";
 import { generateRandomTeams } from "../../utils/utils";
 import { deleteTeam } from "../../utils/handleDeleteTeam";
 import AlertDialog from "../../componets/ui/AlertDialog";
@@ -16,131 +13,47 @@ import {
   Draggable,
   DropResult,
 } from "react-beautiful-dnd";
+import useRegistrationData from "../../utils/useRegistrationData";
 
 interface Team {
   id: number;
   first_name: string;
   last_name: string;
   academy: string;
+  position?: number;
 }
 
-const DashboardCreate = () => {
-  const { registrationData, isError, isLoading } = useERegistrationData();
+const DashboardCreateTeams = () => {
+  const { registrationData, refreshRegistrationData, isError, isLoading } =
+    useRegistrationData();
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [teams, setTeams] = useState<Team[][]>([]);
   const [editedTeam, setEditedTeam] = useState<Team | null>(null);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
 
-  useEffect(() => {
-    const storedTeams = localStorage.getItem("teams");
+  if (!registrationData) {
+    return;
+  }
 
+  useEffect(() => {
     if (registrationData && registrationData.length > 0) {
-      if (storedTeams) {
-        setTeams(JSON.parse(storedTeams));
+      if (registrationData) {
+        const updatedRegistrationData = registrationData?.map((team) =>
+          team.id === editedTeam?.id ? editedTeam : team
+        );
+        setTeams(updatedRegistrationData ? [updatedRegistrationData] : []);
+
+        const dragandroptTeams = registrationData
+          .flatMap((table) => table)
+          .sort((a, b) => a.position - b.position);
+        setTeams([dragandroptTeams]);
       } else {
         const generatedTeams = generateRandomTeams(registrationData);
         setTeams(generatedTeams);
       }
     }
   }, [registrationData]);
-
-  // const handleDragEnd = async (result: DropResult) => {
-  //   if (!result.destination) {
-  //     return;
-  //   }
-
-  //   const { source, destination } = result;
-  //   const sourceTableIndex = parseInt(source.droppableId.split("-")[1]);
-  //   const destinationTableIndex = parseInt(
-  //     destination.droppableId.split("-")[1]
-  //   );
-  //   const draggedTeam = teams[sourceTableIndex][source.index];
-
-  //   if (
-  //     source.droppableId === destination.droppableId &&
-  //     source.index === destination.index
-  //   ) {
-  //     // If the source and destination are the same, no need to update positions
-  //     return;
-  //   }
-
-  //   // Remove the dragged team from the source table
-  //   const updatedSourceTable = Array.from(teams[sourceTableIndex]);
-  //   updatedSourceTable.splice(source.index, 1);
-
-  //   // Add the dragged team to the destination table
-  //   const updatedDestinationTable = Array.from(teams[destinationTableIndex]);
-  //   updatedDestinationTable.splice(destination.index, 0, draggedTeam);
-
-  //   // Create a copy of the teams array to update state atomically
-  //   const updatedTeams = [...teams];
-  //   updatedTeams[sourceTableIndex] = updatedSourceTable;
-  //   updatedTeams[destinationTableIndex] = updatedDestinationTable;
-
-  //   // Extract required fields for each team
-  //   const extractTeamFields = (team: Team) => {
-  //     const { id, first_name, last_name, academy } = team;
-  //     return { id, first_name, last_name, academy };
-  //   };
-
-  //   // Update the teams state with extracted fields
-  //   const updatedTeamsExtracted = updatedTeams.map((table) =>
-  //     table.map((team) => extractTeamFields(team))
-  //   );
-  //   console.log(updatedTeamsExtracted);
-
-  //   try {
-  //     const response = await axios.get(`${env.NEXT_PUBLIC_API_URL}/api/teams`);
-  //     const responseData = response.data;
-
-  //     const allTeamsInState = updatedTeamsExtracted.flat();
-  //     const allTeamsFromAPI = responseData.allTeams;
-
-  //     // Filter out duplicate teams by ID
-  //     const uniqueTeamsInState = allTeamsInState.filter(
-  //       (team, index, self) => index === self.findIndex((t) => t.id === team.id)
-  //     );
-
-  //     if (
-  //       uniqueTeamsInState.length !== allTeamsFromAPI.length ||
-  //       !allTeamsFromAPI.some((team: Team) =>
-  //         uniqueTeamsInState.some((stateTeam) => stateTeam.id === team.id)
-  //       )
-  //     ) {
-  //       // If the lengths are different or there are missing/new teams, make the POST request to create/update the teams
-  //       const postResponse = await axios.post(
-  //         `${env.NEXT_PUBLIC_API_URL}/api/teams`,
-  //         { teams: uniqueTeamsInState },
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //         }
-  //       );
-  //       console.log("Teams created/updated successfully");
-  //     } else {
-  //       // If the lengths are the same and no missing/new teams, make the PUT request to update team positions
-  //       const putResponse = await axios.put(
-  //         `${env.NEXT_PUBLIC_API_URL}/api/teams`,
-  //         { teams: uniqueTeamsInState },
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //         }
-  //       );
-  //       console.log("Teams positions updated successfully");
-  //     }
-
-  //     // Set the teams state after the update
-  //     setTeams(updatedTeams);
-  //     localStorage.setItem("teams", JSON.stringify(updatedTeams));
-  //   } catch (error) {
-  //     // Handle any errors that occur during the request
-  //     console.error("Failed to update teams positions:", error);
-  //   }
-  // };
 
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) {
@@ -152,7 +65,6 @@ const DashboardCreate = () => {
     const destinationTableIndex = parseInt(
       destination.droppableId.split("-")[1]
     );
-    const draggedTeam = teams[sourceTableIndex][source.index];
 
     if (
       source.droppableId === destination.droppableId &&
@@ -162,41 +74,38 @@ const DashboardCreate = () => {
       return;
     }
 
+    const updatedTeams = [...teams];
+
     // Remove the dragged team from the source table
-    const updatedSourceTable = Array.from(teams[sourceTableIndex]);
-    updatedSourceTable.splice(source.index, 1);
-
-    // Add the dragged team to the destination table if it's not already present
-    const updatedDestinationTable = Array.from(teams[destinationTableIndex]);
-    if (!updatedDestinationTable.includes(draggedTeam)) {
-      updatedDestinationTable.splice(destination.index, 0, draggedTeam);
-    }
-
-    // Update the teams state
-    const updatedTeams = Array.from(teams);
-    updatedTeams[sourceTableIndex] = updatedSourceTable;
-    updatedTeams[destinationTableIndex] = updatedDestinationTable;
-
-    const updatedTeamsExtracted = updatedTeams.map((table) =>
-      table.map((team) => {
-        const { id, ...rest } = team;
-        return { id, ...rest };
-      })
+    const [draggedTeam] = updatedTeams[sourceTableIndex].splice(
+      source.index,
+      1
     );
-    console.log(updatedTeamsExtracted);
 
-    // Set the teams state immediately after the drag and drop
-    setTeams(updatedTeams);
-    localStorage.setItem("teams", JSON.stringify(updatedTeams));
+    // Insert the dragged team into the destination table
+    updatedTeams[destinationTableIndex].splice(
+      destination.index,
+      0,
+      draggedTeam
+    );
 
-    // Update the team positions in the database
-    const allTeamsInState = updatedTeams.flat();
-    console.log(allTeamsInState);
+    console.log("updatedTeams", updatedTeams);
+
+    // Flatten the teams array
+    const flatTeams = updatedTeams.flat();
+
+    const changedTeams = flatTeams.filter((team, index) => {
+      const originalPosition = team.position;
+      const newPosition = index + 1;
+      return originalPosition !== newPosition;
+    });
+
+    console.log("changedTeams", changedTeams);
 
     try {
       const putResponse = await axios.put(
-        `/api/registration`,
-        { allTeamsInState },
+        `${import.meta.env.VITE_REACT_APP_API_URL}/api/registration`,
+        { allTeamsInState: changedTeams },
         {
           headers: {
             "Content-Type": "application/json",
@@ -205,8 +114,10 @@ const DashboardCreate = () => {
       );
 
       if (putResponse.status === 200) {
+        refreshRegistrationData();
+
         console.log("Team positions updated successfully");
-        console.log({ teams: allTeamsInState });
+        console.log({ teams: changedTeams });
       } else {
         console.error("Failed to update team positions");
       }
@@ -243,7 +154,9 @@ const DashboardCreate = () => {
   const handleEditFormSubmit = async () => {
     try {
       const response = await axios.put(
-        `/api/registration/${editedTeam?.id}`,
+        `${import.meta.env.VITE_REACT_APP_API_URL}/api/registration/${
+          editedTeam?.id
+        }`,
         editedTeam,
         {
           headers: {
@@ -251,13 +164,12 @@ const DashboardCreate = () => {
           },
         }
       );
-      console.log(editedTeam);
 
       if (response.status === 200) {
         const updatedTeams = teams.map((table) =>
           table.map((team) => (team.id === editedTeam?.id ? editedTeam : team))
         );
-        setTeams(updatedTeams);
+        setTeams([...updatedTeams]);
         setIsEditFormOpen(false);
         setEditedTeam(null);
         toast.success(`Updating team with ID: ${editedTeam?.id}`);
@@ -329,7 +241,12 @@ const DashboardCreate = () => {
                             </td>
                             <td className="flex space-x-2">
                               <button onClick={() => togglePopUp(team.id)}>
-                                <DotsVertical className="w-5 h-5 text-gray-500 hover:text-gray-900" />
+                                <img
+                                  src={DotsVertical}
+                                  alt="dots vertical"
+                                  width={25}
+                                  height={25}
+                                />
                               </button>
                             </td>
                           </tr>
@@ -446,4 +363,4 @@ const DashboardCreate = () => {
   );
 };
 
-export default DashboardCreate;
+export default DashboardCreateTeams;

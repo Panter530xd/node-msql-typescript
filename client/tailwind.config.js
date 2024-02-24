@@ -16,9 +16,8 @@ export default {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        admin: "url('/img/bg.png')",
-        user: "url('/img/user.jpg')",
-        dashboard: "url('/img/dashboard-bg.png')",
+        admin: "url('./images/img/bg.png')",
+        dashboard: "url('./images/img/dashboard-bg.png')",
       },
     },
   },
