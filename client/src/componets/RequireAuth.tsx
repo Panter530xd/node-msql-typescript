@@ -1,15 +1,4 @@
 import { useLocation, Outlet, Navigate } from "react-router-dom";
-<<<<<<< HEAD
-
-import { useUser } from "../utils/useUser";
-
-const RequireAuth = ({ allowedRoles }: { allowedRoles: string }) => {
-  const { data: user, isLoading } = useUser();
-  console.log(user);
-
-  const location = useLocation();
-
-=======
 import { useAuthData } from "../utils/useAuthData";
 
 const RequireAuth = ({ allowedRoles }: { allowedRoles: string[] }) => {
@@ -19,7 +8,6 @@ const RequireAuth = ({ allowedRoles }: { allowedRoles: string[] }) => {
 
   console.log("USER", user);
 
->>>>>>> 3e5a84627112bc37b0e696c6d2845fca6b87b760
   if (!user) {
     return null;
   }
