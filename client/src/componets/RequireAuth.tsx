@@ -1,25 +1,12 @@
 import { useLocation, Outlet, Navigate } from "react-router-dom";
-import { useAuthData } from "../utils/useAuthData";
-import { useEffect } from "react";
+
+import { useUser } from "../utils/useUser";
 
 const RequireAuth = ({ allowedRoles }: { allowedRoles: string }) => {
-  const { data: user, isLoading } = useAuthData();
+  const { data: user, isLoading } = useUser();
+  console.log(user);
 
   const location = useLocation();
-
-  useEffect(() => {
-    console.log("USER", user);
-
-    // Ensure that user data is loaded before making the comparison
-    // if (!isLoading && user) {
-    //   console.log("USER", user.role);
-    //   console.log("USERallowedRoles", allowedRoles);
-    //   console.log(
-    //     "USER Compare",
-    //     user.role && allowedRoles.includes(user.role)
-    //   );
-    // }
-  }, [user]);
 
   if (!user) {
     return null;

@@ -23,16 +23,16 @@ export function authenticateToken(
   next: NextFunction
 ) {
   console.log("Headers", req.headers);
-  // const authHeader = req.headers.authorization || req.headers.Authorization;
-  // console.log("Auth Header", authHeader);
-  // if (typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
-  //   return res.sendStatus(401);
-  // }
-  // const token = authHeader.split(" ")[1];
-  const cookies = req.cookies;
-  if (!cookies?.access_token) return res.sendStatus(401);
-  const token = cookies.access_token;
-  console.log("Token", token);
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  console.log("Auth Header", authHeader);
+  if (typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
+    return res.sendStatus(401);
+  }
+  const token = authHeader.split(" ")[1];
+  // const cookies = req.cookies;
+  // if (!cookies?.access_token) return res.sendStatus(401);
+  // const token = cookies.access_token;
+  // console.log("Token", token);
 
   if (!token) {
     return res.sendStatus(401);

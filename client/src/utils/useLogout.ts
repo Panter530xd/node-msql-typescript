@@ -1,21 +1,23 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useNavigate } from "react-router-dom";
-import { useAuthData } from "./useAuthData";
+
 import toast from "react-hot-toast";
+import { useUser } from "./useUser";
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { data: user } = useAuthData();
-
+  const { data: user } = useUser();
+  console.log("User", user);
+  const accessToken = localStorage.getItem("accessToken");
   const logoutFetch = async () => {
     const response = await fetch("http://localhost:3000/api/users/logout", {
       method: "POST",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${user?.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     if (!response.ok) {

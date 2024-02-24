@@ -38,12 +38,8 @@ app.post("/", (req: Request, res: Response) => {
   });
 });
 
-app.get(
-  "/api/protected-route",
-  authenticateToken,
-  (req: Request, res: Response) => {
-    res.json({ message: "Protected route accessed", user: req.user });
-  }
-);
+app.get("/api/verify", authenticateToken, (req: Request, res: Response) => {
+  res.json({ message: "Protected route accessed", user: req.user });
+});
 
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));

@@ -14,7 +14,7 @@ import RequireAuth from "./componets/RequireAuth.tsx";
 import Layout from "./layouts/Layout.tsx";
 import Unauthorized from "./componets/Unauthorized.tsx";
 import ErrorBoundary from "./componets/ErrorBoundary.tsx";
-import { AuthProvider } from "./context/AuthContext.tsx";
+
 import { DashboardProvider } from "./context/DashboardContext.tsx";
 import DashboardLayout from "./layouts/Dashboard.tsx";
 
@@ -35,37 +35,29 @@ function App() {
     <>
       <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <Navbar />
-            <DashboardProvider>
-              <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route element={<RequireAuth allowedRoles={"user"} />}>
-                    <Route index element={<Home />} />
-                  </Route>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<RegisterUser />} />
-                  <Route path="*" element={<NoPage />} />
-                  <Route path="unauthorized" element={<Unauthorized />} />
-                  <Route element={<RequireAuth allowedRoles={"admin"} />}>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/dashboard/*" element={<DashboardLayout />}>
-                      <Route path="description" element={<DashboardCreate />} />
-                      <Route
-                        path="agenda"
-                        element={<DashboardCreateAgenda />}
-                      />
-                    </Route>
+          <Navbar />
+          <DashboardProvider>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route element={<RequireAuth allowedRoles={"user"} />}>
+                  <Route index element={<Home />} />
+                </Route>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<RegisterUser />} />
+                <Route path="*" element={<NoPage />} />
+                <Route path="unauthorized" element={<Unauthorized />} />
+                <Route element={<RequireAuth allowedRoles={"admin"} />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard/*" element={<DashboardLayout />}>
+                    <Route path="description" element={<DashboardCreate />} />
+                    <Route path="agenda" element={<DashboardCreateAgenda />} />
                   </Route>
                 </Route>
-              </Routes>
-              <Toaster position="top-center" reverseOrder={false} />
-              <ReactQueryDevtools
-                initialIsOpen={false}
-                position="bottom-right"
-              />
-            </DashboardProvider>
-          </AuthProvider>
+              </Route>
+            </Routes>
+            <Toaster position="top-center" reverseOrder={false} />
+            <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+          </DashboardProvider>
         </QueryClientProvider>
       </ErrorBoundary>
     </>

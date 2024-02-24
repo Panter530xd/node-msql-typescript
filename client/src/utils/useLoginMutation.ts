@@ -1,54 +1,38 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import { User } from "./useAuthData";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import Cookies from "universal-cookie";
-import useLogin from "./useLogin";
 
 export const useLoginMutation = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const loginUser = useLogin();
 
-  const cookies = new Cookies(null, { path: "/" });
-  console.log("Cookies", cookies.getAll());
-
-  const loginMutation = useMutation(
-    async (data: { email: string; password: string }) => {
-      const loginData = await loginUser(data);
-
-      const newAccessToken = loginData.accessToken;
-
-      if (!newAccessToken) {
-        throw new Error("Access token not found in login response");
-      }
-
-      queryClient.setQueryData<string>(["accessToken"], newAccessToken);
-
-      return loginData;
-    },
-    {
-      onSuccess: (loginData) => {
-        queryClient.setQueryData<User | undefined>(["user"], {
-          ...loginData,
-          accessToken: loginData.accessToken,
-        });
-        navigate("/");
-        toast.success("User successfully logged in");
-        queryClient.invalidateQueries({
-          queryKey: ["accessToken"],
-        });
+  const loginUser = async (formData: { email: string; password: string }) => {
+    const response = await fetch("http://localhost:3000/api/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-      onError: (error: Error) => {
-        toast.error(error.message);
-      },
+      credentials: "include",
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message);
     }
-  );
 
-  const accessToken = cookies.get("access_token");
-  console.log("Cokies", accessToken);
+    return response.json();
+  };
 
-  useQuery<string>(["accessToken"], { initialData: accessToken });
-
-  return loginMutation;
+  return useMutation<
+    { email: string; id: string; role: string; accessToken: string },
+    string,
+    { email: string; password: string }
+  >({
+    mutationFn: (formData) => loginUser(formData),
+    onSuccess: (user) => {
+      queryClient.setQueryData(["user"], user);
+      localStorage.setItem("accessToken", user.accessToken);
+      navigate("/dashboard");
+    },
+  });
 };
