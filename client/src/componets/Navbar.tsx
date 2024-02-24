@@ -22,11 +22,6 @@ export default function Navbar() {
           Node Express Typescript Mysql React
         </Link>
       </div>
-
-      <Link to="/" className="font-semibold">
-        Node Express Typescript Mysql React
-      </Link>
-
       {user ? (
         <div>
           <button
