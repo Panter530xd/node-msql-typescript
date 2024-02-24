@@ -1,19 +1,8 @@
 import { Link } from "react-router-dom";
-import { useLogout } from "../utils/useLogout";
-import { useUser } from "../utils/useUser";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const logoutMutation = useLogout();
-  const { data: user } = useUser();
-
-  const logout = async () => {
-    try {
-      await logoutMutation.mutateAsync();
-    } catch (error) {
-      console.error("Error during logout:", error);
-      throw error;
-    }
-  };
+  const { logout, user } = useAuth();
 
   return (
     <nav className="flex justify-between items-center bg-indigo-500 py-5 text-white px-4">

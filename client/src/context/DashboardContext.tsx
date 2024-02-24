@@ -1,7 +1,5 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import axios from "axios";
-import { useUser } from "../utils/useUser";
-import { useNavigate } from "react-router-dom";
 
 type DashboardContextProps = {
   eventName: string;
@@ -20,8 +18,6 @@ type DashboardProviderProps = {
 export const DashboardProvider: React.FC<DashboardProviderProps> = ({
   children,
 }) => {
-  const navigate = useNavigate();
-  const { data: user, status } = useUser();
   const [eventName, setEventName] = useState("");
 
   useEffect(() => {
@@ -45,14 +41,6 @@ export const DashboardProvider: React.FC<DashboardProviderProps> = ({
 
     fetchEventName();
   }, []);
-
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (status === "success" && !user) {
-    navigate("/login");
-  }
 
   return (
     <DashboardContext.Provider value={{ eventName, setEventName }}>
