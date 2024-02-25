@@ -33,7 +33,13 @@ export async function ForgotPassword(req: Request, res: Response) {
     { expiresIn: "1d" }
   );
 
-  const resetLink = `http://localhost:5173/reset-password/${user.id}/${token}`;
+  // Determine base URL based on environment
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? "https://node-mysql-react-front.netlify.app/"
+      : "http://localhost:5173/";
+
+  const resetLink = `${baseUrl}reset-password/${user.id}/${token}`;
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
