@@ -33,7 +33,6 @@ export async function ForgotPassword(req: Request, res: Response) {
     { expiresIn: "1d" }
   );
 
-  // Determine base URL based on environment
   const baseUrl =
     process.env.NODE_ENV === "production"
       ? "https://node-mysql-react-front.netlify.app/"
