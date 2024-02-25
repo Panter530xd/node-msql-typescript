@@ -25,8 +25,12 @@ export const useAuthData = () => {
         );
 
         if (response.status === 401) {
+          const isResetPasswordPage =
+            window.location.pathname.startsWith("/reset-password");
+          if (!isResetPasswordPage) {
+            navigate("/login");
+          }
           queryClient.setQueryData(["user"], undefined);
-          navigate("/login");
           return Promise.reject(new Error("User not authenticated"));
         }
 
